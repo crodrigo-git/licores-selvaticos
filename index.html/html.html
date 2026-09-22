@@ -1,0 +1,381 @@
+ <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Licores Selváticos | Bebidas Tradicionales de la Amazonía</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        selva: {
+                            dark: '#1e382b',   /* Verde Bosque Profundo */
+                            main: '#2d5a27',   /* Verde Selva Primario */
+                            medium: '#487e3a', /* Verde Vegetación */
+                            light: '#a3db3a',  /* Verde Limón / Hoja Nueva */
+                            brown: '#4a3525',  /* Marrón Corteza / Madera */
+                            amber: '#d99b26',  /* Ámbar Liqueur */
+                            warm: '#fbf9f4'    /* Fondo Cálido Orgánico */
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        serif: ['Georgia', 'Cambria', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .gradient-hero {
+            background: linear-gradient(135deg, rgba(30, 56, 43, 0.95) 0%, rgba(74, 53, 37, 0.88) 100%);
+        }
+        .pattern-overlay {
+            background-image: radial-gradient(#a3db3a 0.75px, transparent 0.75px);
+            background-size: 24px 24px;
+            opacity: 0.08;
+        }
+    </style>
+</head>
+<body class="bg-selva-warm text-stone-800 flex flex-col min-h-screen selection:bg-selva-light selection:text-selva-dark">
+
+    <!-- Modal Verificación de Edad (+18) -->
+    <div id="ageModal" class="fixed inset-0 bg-selva-dark/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-white max-w-md w-full rounded-2xl p-8 text-center shadow-2xl border border-selva-light/30">
+            <div class="w-16 h-16 bg-selva-light/20 text-selva-main rounded-full flex items-center justify-center mx-i my-0 mx-auto mb-4">
+                <i data-lucide="shield-alert" class="w-8 h-8 text-selva-main"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-selva-dark mb-2">Verificación de Edad</h2>
+            <p class="text-stone-600 text-sm mb-6">Para ingresar a nuestro sitio web de elixires y licores artesanales selváticos, debes ser mayor de edad.</p>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button onclick="confirmAge(true)" class="w-full py-3 bg-selva-main hover:bg-selva-dark text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-lg">
+                    Soy mayor de 18 años
+                </button>
+                <button onclick="confirmAge(false)" class="w-full py-3 bg-stone-100 hover:bg-stone-200 text-stone-600 font-semibold rounded-xl transition-all">
+                    Salir
+                </button>
+            </div>
+            <p class="text-xs text-stone-400 mt-4">Tomar bebidas alcohólicas en exceso es dañino.</p>
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <header class="sticky top-0 z-40 bg-selva-dark/95 backdrop-blur-md text-white border-b border-selva-medium/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-full bg-selva-light/20 border border-selva-light/40 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <i data-lucide="leaf" class="w-5 h-5 text-selva-light"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-serif font-bold tracking-wide block leading-none">Licores Selváticos</span>
+                    <span class="text-[10px] text-selva-light tracking-widest uppercase">Elixires Ancestrales</span>
+                </div>
+            </a>
+
+            <!-- Menú Escritorio -->
+            <nav class="hidden md:flex items-center gap-8 font-medium text-sm">
+                <a href="#inicio" class="hover:text-selva-light transition-colors">Inicio</a>
+                <a href="#catalogo" class="hover:text-selva-light transition-colors">Catálogo</a>
+                <a href="#historia" class="hover:text-selva-light transition-colors">Nuestra Historia</a>
+                <a href="#contacto" class="hover:text-selva-light transition-colors">Contacto</a>
+            </nav>
+
+            <div class="flex items-center gap-4">
+                <button onclick="toggleCartModal()" class="relative p-2.5 rounded-full bg-selva-medium/40 hover:bg-selva-medium transition-colors border border-selva-light/20">
+                    <i data-lucide="shopping-bag" class="w-5 h-5 text-selva-light"></i>
+                    <span id="cartCount" class="absolute -top-1 -right-1 bg-selva-light text-selva-dark font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="relative bg-selva-dark text-white py-20 lg:py-28 overflow-hidden">
+        <div class="absolute inset-0 pattern-overlay"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <div class="inline-flex items-center gap-2 bg-selva-light/10 text-selva-light px-3 py-1.5 rounded-full text-xs font-semibold border border-selva-light/30">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    100% Maceración Artesanal & Natural
+                </div>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-white leading-tight">
+                    El alma y sabor de la <span class="text-selva-light">Selva Amazónica</span> en tu copa
+                </h1>
+                <p class="text-stone-300 text-lg leading-relaxed">
+                    Descubre nuestra exclusiva selección de licores exóticos macerados con raíces, cortezas y frutos silvestres tradicionales como Chuchuhuasi, 7 Raíces y UVachado.
+                </p>
+                <div class="pt-4 flex flex-col sm:flex-row gap-4">
+                    <a href="#catalogo" class="px-8 py-4 bg-selva-light text-selva-dark font-bold rounded-xl hover:bg-white transition-all shadow-lg text-center flex items-center justify-center gap-2">
+                        Ver Catálogo
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#historia" class="px-8 py-4 border border-white/20 text-white font-medium rounded-xl hover:bg-white/10 transition-all text-center">
+                        Conoce la tradición
+                    </a>
+                </div>
+            </div>
+
+            <!-- Destacado Visual -->
+            <div class="relative flex justify-center">
+                <div class="w-72 h-72 sm:w-80 sm:h-80 bg-selva-main/40 rounded-full blur-3xl absolute -z-10"></div>
+                <div class="bg-selva-brown/40 border border-selva-light/20 p-8 rounded-3xl backdrop-blur-sm text-center max-w-sm">
+                    <div class="w-full h-56 bg-selva-dark/80 rounded-2xl mb-6 flex items-center justify-center overflow-hidden relative">
+                        <i data-lucide="wine" class="w-24 h-24 text-selva-amber animate-pulse"></i>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-selva-light mb-1">Chuchuhuasi Premium</h3>
+                    <p class="text-xs text-stone-300 mb-4">Macerado en aguardiente de caña con corteza ancestral y miel silvestre.</p>
+                    <span class="text-2xl font-bold text-white">S/ 45.00</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Catálogo -->
+    <section id="catalogo" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <h2 class="text-3xl sm:text-4xl font-serif font-bold text-selva-dark mb-4">Nuestra Colección de Licores</h2>
+            <p class="text-stone-600">Elaborados con ingredientes 100% naturales recolectados de manera sostenible por comunidades locales.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8" id="productsGrid">
+            <!-- Producto 1 -->
+            <div class="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                <div class="h-64 bg-stone-100 flex items-center justify-center p-6 relative">
+                    <span class="absolute top-4 left-4 bg-selva-main text-white text-xs font-semibold px-2.5 py-1 rounded-md">Afrodisíaco</span>
+                    <i data-lucide="glass-water" class="w-20 h-20 text-selva-brown"></i>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-xl font-bold text-selva-dark mb-2">7 Raíces Amazon</h3>
+                    <p class="text-sm text-stone-600 mb-4 flex-grow">Poderosa mezcla de cortezas amazónicas. Vigorizante natural con toques dulces de miel de abeja.</p>
+                    <div class="flex items-center justify-between pt-4 border-t border-stone-100">
+                        <span class="text-2xl font-bold text-selva-brown">S/ 50.00</span>
+                        <button onclick="addToCart('7 Raíces Amazon', 50)" class="px-4 py-2.5 bg-selva-main hover:bg-selva-dark text-white font-semibold rounded-lg transition-colors flex items-center gap-2 text-sm">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Añadir
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 2 -->
+            <div class="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                <div class="h-64 bg-stone-100 flex items-center justify-center p-6 relative">
+                    <span class="absolute top-4 left-4 bg-selva-amber text-white text-xs font-semibold px-2.5 py-1 rounded-md">Frutal</span>
+                    <i data-lucide="wine" class="w-20 h-20 text-selva-amber"></i>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-xl font-bold text-selva-dark mb-2">Uvachado Tradicional</h3>
+                    <p class="text-sm text-stone-600 mb-4 flex-grow">Macerado de uva borgoña silvestre en destilado de caña. Dulce, afrutado y refrescante.</p>
+                    <div class="flex items-center justify-between pt-4 border-t border-stone-100">
+                        <span class="text-2xl font-bold text-selva-brown">S/ 40.00</span>
+                        <button onclick="addToCart('Uvachado Tradicional', 40)" class="px-4 py-2.5 bg-selva-main hover:bg-selva-dark text-white font-semibold rounded-lg transition-colors flex items-center gap-2 text-sm">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Añadir
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 3 -->
+            <div class="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                <div class="h-64 bg-stone-100 flex items-center justify-center p-6 relative">
+                    <span class="absolute top-4 left-4 bg-selva-medium text-white text-xs font-semibold px-2.5 py-1 rounded-md">Digestivo</span>
+                    <i data-lucide="flame" class="w-20 h-20 text-selva-main"></i>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-xl font-bold text-selva-dark mb-2">RC (Rompe Calzón)</h3>
+                    <p class="text-sm text-stone-600 mb-4 flex-grow">El elixir más famoso de la selva. Maceración intensa con raíz de cumaceba y fierro caspi.</p>
+                    <div class="flex items-center justify-between pt-4 border-t border-stone-100">
+                        <span class="text-2xl font-bold text-selva-brown">S/ 55.00</span>
+                        <button onclick="addToCart('RC (Rompe Calzón)', 55)" class="px-4 py-2.5 bg-selva-main hover:bg-selva-dark text-white font-semibold rounded-lg transition-colors flex items-center gap-2 text-sm">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Añadir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Historia / Características -->
+    <section id="historia" class="bg-selva-dark text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-serif font-bold mb-6 text-selva-light">Tradición Ancestral en Cada Gota</h2>
+                    <p class="text-stone-300 leading-relaxed mb-6">
+                        Nuestra pasión nace en el corazón de la Amazonía. Respetamos los tiempos de maceración artesanal en tinajas de barro y roble para obtener elixires puros, preservando los beneficios naturales y el sabor auténtico de nuestra tierra.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="p-2 bg-selva-medium/40 rounded-lg text-selva-light border border-selva-light/20">
+                                <i data-lucide="check" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">100% Orgánico y Natural</h4>
+                                <p class="text-xs text-stone-300">Sin colorantes ni saborizantes artificiales.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="p-2 bg-selva-medium/40 rounded-lg text-selva-light border border-selva-light/20">
+                                <i data-lucide="check" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Maceración Prolongada</h4>
+                                <p class="text-xs text-stone-300">Reposo mínimo de 6 meses para garantizar máxima potencia e intensidad.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-selva-brown/30 p-8 rounded-3xl border border-selva-light/10 text-center">
+                    <i data-lucide="trees" class="w-32 h-32 text-selva-light mx-auto mb-4 opacity-80"></i>
+                    <h3 class="text-2xl font-serif font-bold text-white mb-2">Sostenibilidad Bosque Vivo</h3>
+                    <p class="text-sm text-stone-300">Trabajamos de la mano con recolectores locales promoviendo el cuidado de los bosques amazónicos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto -->
+    <section id="contacto" class="py-20 max-w-4xl mx-auto px-4 text-center">
+        <h2 class="text-3xl font-serif font-bold text-selva-dark mb-4">¿Tienes alguna duda o pedido especial?</h2>
+        <p class="text-stone-600 mb-8">Atendemos pedidos al por mayor y menor con envíos a todo el país.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-6">
+            <a href="https://wa.me/51999999999" target="_blank" class="flex items-center justify-center gap-3 bg-emerald-600 text-white font-bold px-8 py-4 rounded-xl hover:bg-emerald-700 transition-colors shadow-md">
+                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                Escribir a WhatsApp
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-selva-dark text-stone-400 py-12 border-t border-selva-medium/20 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-4">
+            <div class="flex justify-center items-center gap-2 text-white font-serif font-bold text-lg">
+                <i data-lucide="leaf" class="w-5 h-5 text-selva-light"></i>
+                Licores Selváticos
+            </div>
+            <p class="text-xs text-stone-400">© 2026 Licores Selváticos. Todos los derechos reservados.</p>
+            <p class="text-[11px] text-stone-400">Tomar bebidas alcohólicas en exceso es dañino. Prohibida la venta a menores de 18 años.</p>
+        </div>
+    </footer>
+
+    <!-- Modal Carrito de Compras -->
+    <div id="cartModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex justify-end">
+        <div class="bg-white w-full max-w-md h-full p-6 flex flex-col justify-between shadow-2xl">
+            <div>
+                <div class="flex items-center justify-between pb-4 border-b border-stone-200">
+                    <h3 class="text-xl font-bold text-selva-dark flex items-center gap-2">
+                        <i data-lucide="shopping-bag" class="w-5 h-5 text-selva-main"></i> Tu Pedido
+                    </h3>
+                    <button onclick="toggleCartModal()" class="text-stone-400 hover:text-stone-600">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                <div id="cartItems" class="py-4 space-y-4 max-h-[60vh] overflow-y-auto">
+                    <p class="text-stone-400 text-center py-8">Tu carrito está vacío</p>
+                </div>
+            </div>
+            <div class="border-t border-stone-200 pt-4 space-y-4">
+                <div class="flex justify-between items-center font-bold text-lg">
+                    <span>Total:</span>
+                    <span id="cartTotal" class="text-selva-brown">S/ 0.00</span>
+                </div>
+                <button onclick="sendWhatsAppOrder()" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
+                    <i data-lucide="send" class="w-5 h-5"></i> Realizar pedido por WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de Interactividad -->
+    <script>
+        lucide.createIcons();
+
+        // Control de Verificación de Edad
+        function confirmAge(isAdult) {
+            if (isAdult) {
+                document.getElementById('ageModal').classList.add('hidden');
+            } else {
+                alert("Debes ser mayor de edad para acceder a esta página.");
+                window.location.href = "https://www.google.com";
+            }
+        }
+
+        // Lógica de Carrito
+        let cart = [];
+
+        function addToCart(name, price) {
+            const existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ name, price, quantity: 1 });
+            }
+            updateCart();
+            toggleCartModal();
+        }
+
+        function updateCart() {
+            const container = document.getElementById('cartItems');
+            const countEl = document.getElementById('cartCount');
+            const totalEl = document.getElementById('cartTotal');
+
+            const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+            const totalPrice = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+            countEl.textContent = totalItems;
+            totalEl.textContent = `S/ ${totalPrice.toFixed(2)}`;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-stone-400 text-center py-8">Tu carrito está vacío</p>';
+                return;
+            }
+
+            container.innerHTML = cart.map((item, index) => `
+                <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+                    <div>
+                        <h4 class="font-bold text-sm text-selva-dark">${item.name}</h4>
+                        <span class="text-xs text-stone-500">S/ ${item.price.toFixed(2)} x ${item.quantity}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="changeQty(${index}, -1)" class="w-6 h-6 bg-stone-100 rounded flex items-center justify-center font-bold text-stone-600 hover:bg-stone-200">-</button>
+                        <span class="text-sm font-semibold">${item.quantity}</span>
+                        <button onclick="changeQty(${index}, 1)" class="w-6 h-6 bg-stone-100 rounded flex items-center justify-center font-bold text-stone-600 hover:bg-stone-200">+</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function changeQty(index, change) {
+            cart[index].quantity += change;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCart();
+        }
+
+        function toggleCartModal() {
+            document.getElementById('cartModal').classList.toggle('hidden');
+        }
+
+        function sendWhatsAppOrder() {
+            if (cart.length === 0) {
+                alert("El carrito está vacío");
+                return;
+            }
+            let text = "¡Hola! Quisiera realizar el siguiente pedido de licores selváticos:\n\n";
+            cart.forEach(item => {
+                text += `• ${item.name} (x${item.quantity}) - S/ ${(item.price * item.quantity).toFixed(2)}\n`;
+            });
+            const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+            text += `\n*Total a pagar:* S/ ${total.toFixed(2)}`;
+
+            const phone = "51999999999"; // Cambia este número por tu número de WhatsApp
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
